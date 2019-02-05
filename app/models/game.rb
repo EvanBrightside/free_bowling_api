@@ -37,8 +37,13 @@ class Game < ApplicationRecord
   end
 
   def frame_score(frame)
-    return frame.rolls_total unless not_only_one_frame && frame == frames.last
+    return frame.rolls_total unless frames.count > 1 && frame == frames.last
 
+    bonus_session(frame)
+    frame.rolls_total
+  end
+
+  def bonus_session(frame)
     if frames[-2].strike?
       return frame.rolls_total if frame.rolls.second.nil? && !frame.strike?
 
@@ -46,11 +51,6 @@ class Game < ApplicationRecord
     elsif frames[-2].spare? && frame.rolls.count == 1
       upd_bonus_score(frame.rolls.first.pins)
     end
-    frame.rolls_total
-  end
-
-  def not_only_one_frame
-    frames.count > 1
   end
 
   def upd_bonus_score(amount)

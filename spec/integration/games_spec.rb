@@ -24,23 +24,11 @@ describe 'Games API' do
       parameter name: :id, in: :path, type: :string
 
       response '200', 'game found' do
-        schema type: :object,
-          properties: {
-            id: { type: :integer }
-          },
-          required: ['id']
+        schema type: :object, properties: {
+          id: { type: :integer }
+        }, required: ['id']
 
         let(:id) { Game.create.id }
-        run_test!
-      end
-
-      response '404', 'game not found' do
-        let(:id) { 'invalid' }
-        run_test!
-      end
-
-      response '406', 'unsupported accept header' do
-        let(:'Accept') { 'application/foo' }
         run_test!
       end
     end
@@ -51,24 +39,18 @@ describe 'Games API' do
     post 'Add number of pins for a game' do
       tags 'Games'
       consumes 'application/json', 'application/xml'
-      parameter name: :pins, in: :body, schema: {
+      parameter name: :new_roll, in: :body, schema: {
         type: :object,
         properties: {
           pins: { type: :integer }
         },
         required: ['pins']
       }
-      parameter name: :id, in: :path, type: :string
+      parameter name: :id, in: :path, type: :integer
 
       response '201', 'new roll created' do
-        schema type: :object,
-          properties: {
-            id: { type: :integer }
-          },
-          required: ['id']
-
-        let(:id) { Game.create.id }
-
+        let(:game) { Game.create }
+        let(:id) { game.id }
         let(:new_roll) { { pins: 8 } }
         run_test!
       end

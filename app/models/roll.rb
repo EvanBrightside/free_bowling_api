@@ -7,10 +7,6 @@ class Roll < ApplicationRecord
                      less_than_or_equal_to: :avaliable_pins
                    }
 
-  def pins_count
-    pins == 10 ? '10' : pins.to_s
-  end
-
   def avaliable_pins
     return last_strike if frame.last? && frame.strike?
 
